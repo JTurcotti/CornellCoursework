@@ -1,0 +1,91 @@
+\documentclass{article}
+\title{CS 6117 - HW1}
+\author{Joshua Turcotti}
+\usepackage{jt-shorthand}
+\begin{document}
+\maketitle
+
+\section*{Exercise 1}
+
+\newcommand{\catCD}{\catC \times \catD}
+
+\begin{enumerate}
+\item 
+  For $(f, g), (f', g')$ morphisms in $\catC × \catD$, the composition $(f, g) \circ (f', g') \eqdef (f \circ g, f' \circ g')$ and the identity $\id_{\catC \times \catD} \eqdef (\id_\catC \times \id_\catD)$. We can prove that this forms a category:
+  \begin{description}
+  \item[identity]
+    \begin{align*}
+      \forall (f, g) \in \catCD, (f, g) \circ \id_{\catCD} &\eqdef (f, g) \circ (\id_\catC \times \id_\catD)\\
+                                                           &\eqdef (f \circ \id_\catC, g \circ \id_\catD) \\
+                                                           &= (f, g)
+    \end{align*}
+  \item[associativity]
+    \begin{align*}
+      \forall(f_0, g_0), (f_1, g_1), (f_2, g_2) \in \catCD, \\
+      (f_0, g_0) \circ ((f_1, g_1) \circ (f_2, g_2)) & \eqdef (f_0 \circ (f_1 \circ f_2), g_0 \circ (g_1 \circ g_2))\\
+                                                     &= ((f_0 \circ f_1) \circ f_2, (g_0 \circ g_1) \circ g_2) \\
+                                                     &\eqdef ((f_0, g_0) \circ (f_1, g_1)) \circ f_2, g_2
+    \end{align*}
+  \end{description}
+\item
+  In $\catCat \times \catCat$, composition of morphisms i.e. pairs of functors can be defined in the expected way: pairs of the composite functors formed from compositions of the respective functors, Identity morphisms are pairs of identity functors. This makes $\catCat \times \catCat$ a category because associativity of functor composition follows immediately from associative of function composition, which lifts to composition of pairs of functors, and the identity of pairs of identities follows from the identity of their components as well.
+\item
+  To define a functor $\catCat \times \catCat \to \catCat$, it suffices to observe that, from part 1, pairs of categories are already categories, so the image of $A \in \catCat \times \catCat$ is just $A \in \catCat$, with any morphisms $f : A \to B$ from $\catCat \times \catCat$ are also morphisms $f: A \to B$ in $\catCat$. Preservation of composition and identities in $\catCat$ is trivial because this is essentially the identity functor.
+\end{enumerate}
+\section*{Exercise 2}
+\newcommand{\List}{\mathit{List}}
+\newcommand{\mon}{\mathbf{Mon}}
+\begin{enumerate}
+\item Given a set $M$, $\List(M)$ can be made a Monoid through the associative binary operation of concatenation with identity element the ``empty set'' $[]$.
+\item The functor $\List$ sends monoid morphisms $\phi: M \to N$ to the ``map'' of the morphism:
+  \begin{align*}
+    \mathit{map}(\phi)([a_0, \ldots, a_n]) \eqdef [\phi(a_0), \ldots, \phi(a_n)]
+  \end{align*}
+  Preservation of identities can be seen by applying the map of the original identity morphism to any list, which will apply that identity to each element of the list and thus yield the same list. Preservation of composition can similarly be seen to follow from element-wise observation.
+  \renewcommand{\Id}{\mathit{Id}}
+\item To verify that $\s: \List \to \Id$ is a natural transformation, we need to verify that for any monoid homomorphism $\phi: M \to N$: $\s_N \circ \List(\phi)= \Id(\phi) \circ \s_M$. We do this elementwise for some $m \in \List(M)$
+  \begin{align*}
+    (\s_N \circ \List(\phi))([m_0, \ldots, m_n]) &= \s_N([\phi(m_0), \ldots, \phi(m_n)]) \\
+                                                 &= \phi(m_0) * \ldots * \phi(m_n) \\
+                                                 &= \phi(m_0 * \ldots * m_n) \\
+                                                 &= \Id(\phi)(m_0 * \ldots * m_n) \\
+                                                 &= (\Id(\phi) \circ \s_M)([m_0, \ldots, m_n])
+  \end{align*}
+\end{enumerate}
+\section*{Exercise 3}
+\newcommand{\Mat}{\mathbf{Mat}}
+\newcommand{\FDV}{\mathbf{FDVect}}
+\renewcommand{\dim}{\mathit{dim}}
+\begin{enumerate}
+\item We choose matrix multiplication as our composition operation on morphisms in $\Mat$ and the identity matrix of dimension $n$ ($a_{ij} = 1$ if $i = j$ else 0) as our identity morphism on object $n$. Identity of the identity matrix follows from its known properties as an identity to the operation of matrix multiplication, and associativity of morphisms follows from the known property of associativity of matrix multiplication.
+\item In order to demonstrate the equivalence between $\Mat$ and $\FDV$, we must first choose a basis $\vec{B}(V)$ for each $V \in \FDV$. Now we will choose functors $F: \FDV \to \Mat$, $G: \Mat \to \FDV$, and show that their compositions are naturally isomorphic to identity functors.
+  \begin{description}
+  \item[defining $F$:] 
+  Now, we define the functor $F: \FDV \to \Mat$. Given a vector space $V$, let $F(V) = \dim(V)$, the dimension of $V$. Given a linear transformation $\phi: V \to W$ let $F(\phi)$ be the $\dim(W)$ by $\dim(V)$ matrix whose $ij$th entry is $\phi(B(V)_i) \cdot B(W)_j$ - in other words, the image of the $i$th basis vector in $V$ under $\phi$ projected onto the $j$th basis vector in $W$. Clearly, $F$ of any identity linear transformation will yield a matrix with 1s for the entries where $i = j$ (a vector projected onto itself), and 0s for the entries where $i \ne j$ (a basis vector projected onto a different basis vector), so identities are preserved by $F$. To see preservation of composition, let $\phi: V \to W$ and $\psi: W \to X$ be linear transformations. It suffices to show equality of the relevant matrices at each position $ik$ for $i \le \dim(V), k \le \dim(X)$:
+  \begin{align}
+    F(\psi \circ \phi)_{ik} &= (\psi \circ \phi)(B(V)_i) \cdot B(X)_k \\
+                            &= \psi(\phi(B(V)_i) \cdot B(X)_k \\
+                            &= \sum_j\qty[\qty(\phi(B(V)_i)\cdot B(W)_j)\psi(B(W)_j)] \cdot B(X)_k \label{a} \\
+                            &= \sum_j\qty[\qty(\phi(B(V)_i) \cdot B(W)_j) \qty(\psi(B(W)_j) \cdot B(X)_k)] \\
+                            &= \sum_j\qty[F(\phi)_{ij} \cdot F(\psi)_{jk}] \\
+                            &= \qty(F(\phi) F(\psi))_{ik}
+  \end{align}
+  Where line \ref{a} expands the application of $\psi$ to argument $\phi(B(V)_i)$ by first projecting $\phi(B(V)_i)$ onto each basis vector of $B(W)$, then scaling each result by $\psi$ applies to that basis vector and summing the scaled results. This is a well-known technique for computing the applications of linear transformations to vector spaces with bases.
+  \item[defining $G$:]
+    Now, we define the functor $G: \Mat \to \FDV$. To do this, for each $n \in \N$ we must choose a ``canonical'' vector space $C_n$ of dimension $n$. Now, for any object $n$ in $\Mat$ we let $G(n) = C_n$. Given an morphism $M$ in $\Mat$, i.e. an $n \times m$ matrix, we let $G(M)$ be the linear transformation $C_n \to C_m$ that sends $B(C_n)_i$ to $\sum_j\qty[M_{ij}B(C_m)_j]$ - i.e. that sends the $i$th basis vector of $C_n$ to the linear combination of basis vectors in $C_m$ determined by the $i$th row of $M$. Preservation of identity for this functor is trivial, as the image of the identity matrix will just send each basis vector of $C_n$ to itself. To show preservation of composition, for $I, J, K \in \N$ let $M$ be an $I \times J$ matrix and $N$ be a $J \times K$ matrix. It suffices to show equality of the relevant linear transformation when applied to each basis vector $B(C_I)_i$ for $i \le I$:
+    \begin{align*}
+      (G(N) \circ G(M))(B(C_I)_i) &= G(N)\qty(\sum_j\qty[M_{ij}B(C_J)_j]) \\
+                                  &= \sum_j\qty[M_{ij}\qty(G(N)(B(C_J)_j))] \\
+                                  &= \sum_j \qty[M_{ij}\sum_k\qty[N_{jk}B(C_K)_k]] \\
+                                  &= \sum_k\sum_j\qty[M_{ij}N_{jk}B(C_K)_k] \\
+                                  &= \sum_k\qty[(MN)_{ik}B(C_K)_k] \\
+                                  &= G(MN)(B(C_I)_i)
+    \end{align*}
+  \item[showing $G \circ F \cong \Id_\FDV$:] To show a natural transformation from $G \circ F$ to $\Id_\FDV$, we let the $V$th component be the ``decanonicalization'' map that sends $C_{\dim(V)}$ to $V$. Then for any $\phi: V \to W$
+    To show a natural transformation from $\Id_\FDV$ to $G \circ F$, we let the $V$th component be the ``canonicalization'' map that sends $V$ to $C_{\dim(V)}$. 
+  \item[showing $F \circ G \cong \Id_\Mat$:] This is easy because $F \circ G$ is actually equal to $\Id_\Mat$. It is easy to see that for any object $n \in \N$ in $\Mat$, $F(G(n)) = n$. Similarly, for any matrix $M: n \to m$ representing a morphism of $\Mat$, $G(M)$ will be a linear transformation whose action on the bases of $C_n$ and $C_m$ is characterized by $M$, so $F(G(M)) = M$. 
+\end{description}
+\item $\Mat$ and $\FDV$ are not strictly isomorphic because $\Mat$ has countably many objects and $\FDV$ does not (this means invrse functors cannot exist because then inverse functions on the objects would exist, implying a bijection exists between objects).
+\end{enumerate}
+
+\end{document}
